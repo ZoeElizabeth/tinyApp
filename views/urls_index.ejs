@@ -3,9 +3,12 @@
 <head>
   <title>TinyApp</title>
 </head>
+<%- include partials/_header.ejs %>
 <body>
+    
+    <h2>This is Index Page</h2> 
  <ul> 
-   <h1><% for (const keys in urls) { %></h1> 
+    <% for (const keys in urls) { %>
    <li><%= keys %> - <a href='<%= urls[keys].shortURL %>'><%= urls[keys].longURL%></a></li>
     <% } %>
    </ul>

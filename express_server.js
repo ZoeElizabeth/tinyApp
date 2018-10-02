@@ -14,6 +14,7 @@ let urlDatabase = {
   '9sm5xK': {shortURL:'9sm5xK', longURL: 'http://www.google.com'},
  };
 
+
  //Listening on local host port
  app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
@@ -32,6 +33,8 @@ app.get("/urls", (req, res) => {
 });
 
 app.get("/urls/:id", (req, res) => {
-  let templateVars = { shortURL: req.params.id };
+  let templateVars = { 
+    urls: urlDatabase,
+    shortURL: req.params.id };
   res.render("urls_show", templateVars);
 });
