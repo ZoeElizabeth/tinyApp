@@ -88,7 +88,7 @@ app.get("/urls/:id", (req, res) => {
 app.post('/urls/login', (req, res)=> {
   let email = req.body.email;
   let password = req.body.password;
-  
+
   res.cookie('email', req.body.email);
   res.redirect('/urls');
 });
@@ -129,9 +129,5 @@ app.post('/urls/:id/edit', (req, res)=> {
   databaseKey.longURL = req.body['longURL']
 
   res.redirect('/urls')
-<<<<<<< HEAD
-});
-=======
 });
 
->>>>>>> feature/cookies
