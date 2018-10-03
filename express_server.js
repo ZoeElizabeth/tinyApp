@@ -36,13 +36,8 @@ function generateShortURL() {
 
 //*************GET requests*************
 app.get("/", (req, res) => {
-  let shortURL = req.params.id
-  let longURL = urlDatabase[longURL]
-  let templateVars = {
-     urls: urlDatabase,
-     shortURL: shortURL,
-     longURL: longURL  };
-  res.render("urls_index", templateVars);
+
+  res.redirect("/urls");
 });
 
 //List all shortURL's and longURls's
@@ -94,3 +89,20 @@ app.post("/urls", (req, res) => {
   res.redirect('/urls/' + makeShortURL) 
 });
 
+// Delete existing URL
+app.post('/urls/:id/delete', (req, res) => {
+let targetId = req.params.id;
+  delete urlDatabase[targetId]
+
+res.redirect('/urls');
+});
+
+// Edit existing URL
+app.post('/urls/:id/edit', (req, res)=> {
+  let targetId = req.params.id;
+  let databaseKey = urlDatabase[targetId]
+
+  databaseKey.longURL = req.body['longURL']
+
+  res.redirect('/urls')
+});

@@ -2,15 +2,17 @@
 <html lang="en">
 <head>
   <title>TinyApp</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
 </head>
 <%- include partials/_header.ejs %>
 <body>
     
     <h2>This is Index Page</h2> 
  <ul> 
-    <% for (const keys in urls) { %>
-   <li><%= keys %> - <a href='<%= urls[keys].shortURL %>'><%= urls[keys].longURL%></a></li>
-
+    <% for (const key in urls) { %>
+   <li><%= key %> - <a href='<%= urls[key].shortURL %>'><%= urls[key].longURL%></a></li>
+   <form method='GET' action='/urls/<%= key %>'><button type='submit'>Edit</button></form>
+   <form method='POST' action='/urls/<%= key %>/delete'><button type ='submit'>Delete</button></form>
    <% } %>
    </ul>
    <a href='/urls/new'>Shorten New URL</a> 
