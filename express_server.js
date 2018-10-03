@@ -24,7 +24,7 @@ let urlDatabase = {
 //*************Functions*************
 
 //Random String for ShortUrl Generator
-function generateRandomString() {
+function generateShortURL() {
   let key = '';
   let charPool = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890abcdefghijklmnopqrstuvwxyz'
 
@@ -61,7 +61,15 @@ app.get("/urls/:id", (req, res) => {
 
 //*************POST requests*************
 
+//Creating new shortURLs tied to longURLS 
 app.post("/urls", (req, res) => {
-  console.log(req.body); 
-  res.send("Ok");         
+  let makeShortURL = generateShortURL()
+  let currentShortURL = makeShortURL
+  let makeLongURL = req.body['longURL'] 
+  //add new urls to database
+  urlDatabase[currentShortURL] = {
+        shortURL: currentShortURL,
+        longURL: makeLongURL,
+      };
+  res.redirect('/urls/' + makeShortURL) 
 });
