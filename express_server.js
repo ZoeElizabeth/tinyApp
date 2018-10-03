@@ -60,7 +60,12 @@ app.get("/urls", (req, res) => {
 
 //Create new shortURL
 app.get("/urls/new", (req, res) => {
-  res.render("urls_new");
+  let templateVars = { 
+    urls: urlDatabase,
+    shortURL: req.params.id,
+    username: req.cookies["email"] 
+  };
+  res.render("urls_new", templateVars);
 });
 
 //Redirect shortURL's to longURL's
