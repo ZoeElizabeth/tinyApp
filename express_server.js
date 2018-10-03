@@ -5,9 +5,14 @@ const express = require("express");
 const app = express();
 const PORT = 8080; // default port 8080
 const bodyParser = require("body-parser");
+const cookieParser = require('cookie-parser')
+
+
+
 
 //Middleware
 app.set("view engine", "ejs");
+app.use(cookieParser())
 app.use(bodyParser.urlencoded({extended: true}));
 
 //Global Objects
@@ -36,13 +41,8 @@ function generateShortURL() {
 
 //*************GET requests*************
 app.get("/", (req, res) => {
-  let shortURL = req.params.id
-  let longURL = urlDatabase[longURL]
-  let templateVars = {
-     urls: urlDatabase,
-     shortURL: shortURL,
-     longURL: longURL  };
-  res.render("urls_index", templateVars);
+
+  res.redirect("/urls");
 });
 
 //List all shortURL's and longURls's
@@ -53,7 +53,8 @@ app.get("/urls", (req, res) => {
   let templateVars = {
      urls: urlDatabase,
      shortURL: shortURL,
-     longURL: longURL };
+     longURL: longURL,
+     username: req.cookies["email"] };
   res.render("urls_index", templateVars);
 });
 
@@ -74,23 +75,59 @@ app.get("/u/:shortURL", (req, res) => {
 app.get("/urls/:id", (req, res) => {
   let templateVars = { 
       urls: urlDatabase,
-      shortURL: req.params.id 
+      shortURL: req.params.id,
+      username: req.cookies["email"] 
     };
   res.render("urls_show", templateVars);
 });
-test for git
+
+
 //*************POST requests*************
+
+//cookie login
+app.post('/urls/login', (req, res)=> {
+  let email = req.body.email;
+  let password = req.body.password;
+  
+  res.cookie('email', req.body.email);
+  res.redirect('/urls');
+});
+
+//cookie logout
+app.post('/logout', (req, res) => {
+  res.clearCookie('email', req.body.email);
+  res.redirect('/urls');
+});
 
 //Creating new shortURLs tied to longURLS 
 app.post("/urls", (req, res) => {
   let makeShortURL = generateShortURL()
   let currentShortURL = makeShortURL
   let makeLongURL = req.body['longURL'] 
+
   //add new urls to database
   urlDatabase[currentShortURL] = {
         shortURL: currentShortURL,
         longURL: makeLongURL,
       };
   res.redirect('/urls/' + makeShortURL) 
+});
+
+// Delete existing URL
+app.post('/urls/:id/delete', (req, res) => {
+let targetId = req.params.id;
+  delete urlDatabase[targetId]
+
+res.redirect('/urls');
+});
+
+// Edit existing URL
+app.post('/urls/:id/edit', (req, res)=> {
+  let targetId = req.params.id;
+  let databaseKey = urlDatabase[targetId]
+
+  databaseKey.longURL = req.body['longURL']
+
+  res.redirect('/urls')
 });
 
