@@ -1,1 +1,18 @@
 <h1>Tiny App </h1>
+<% if (!username) { %>
+
+  <form action='/urls/login' Method='POST'>
+    <input type='text' placeholder='email' name='email'>
+    <input type='password' placeholder='password' name='password'>
+    <button type ='submit'>Login</button>
+  </form>
+  
+    <% }else { %>
+
+    <h5><p> Hello, <%= username %> </p> </h5>
+        <form method='POST' action='/logout'>
+            <input type='submit' value='Logout'>
+        </form>
+
+    <% }; %>
+
