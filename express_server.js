@@ -36,13 +36,24 @@ function generateShortURL() {
 
 //*************GET requests*************
 app.get("/", (req, res) => {
-  let templateVars = { urls: urlDatabase };
+  let shortURL = req.params.id
+  let longURL = urlDatabase[longURL]
+  let templateVars = {
+     urls: urlDatabase,
+     shortURL: shortURL,
+     longURL: longURL  };
   res.render("urls_index", templateVars);
 });
 
 //List all shortURL's and longURls's
 app.get("/urls", (req, res) => {
-  let templateVars = { urls: urlDatabase };
+  let shortURL = req.params.id
+  let longURL = urlDatabase['longURL']
+  
+  let templateVars = {
+     urls: urlDatabase,
+     shortURL: shortURL,
+     longURL: longURL };
   res.render("urls_index", templateVars);
 });
 
@@ -51,11 +62,20 @@ app.get("/urls/new", (req, res) => {
   res.render("urls_new");
 });
 
+//Redirect shortURL's to longURL's
+app.get("/u/:shortURL", (req, res) => {
+  let shortURL = req.params.shortURL
+  let longURL = urlDatabase[shortURL].longURL
+
+  res.redirect(longURL);
+});
+
 //Show all URLs in urlDatabase
 app.get("/urls/:id", (req, res) => {
   let templateVars = { 
-    urls: urlDatabase,
-    shortURL: req.params.id };
+      urls: urlDatabase,
+      shortURL: req.params.id 
+    };
   res.render("urls_show", templateVars);
 });
 
@@ -73,3 +93,4 @@ app.post("/urls", (req, res) => {
       };
   res.redirect('/urls/' + makeShortURL) 
 });
+
