@@ -50,6 +50,15 @@ function generateShortURL() {
       return key;
 };
 
+//Verification of Username/Email to Database
+function findUser(email){
+
+  for (let key in users) { 
+    if (users[key].email === email)
+      return users[key] ;
+  }
+};
+
 
 //*************POST requests*************
 
@@ -70,14 +79,24 @@ app.post('/logout', (req, res) => {
 
 // Registration Requirments
 app.post('/urls/register', (req, res) => {
-
   let email = req.body.email;
   let password = req.body.password;
+  let foundUser = findUser(users)
 
+// Prevent Empty Username and Password Feild
+if (users === '' || password === '' ) {
+  
+  res.send('Error: 400 Bad Request - Email or password cannot be empty!')
+  
+//Prevent duplicate emails
+} else if(foundUser === true) { 
+
+  res.send('Error: 400 Bad Request - Email already in use!')
+} 
    let genId = generateShortURL();
     let newUser = {id: genId, email: email, password: password};
       users[genId] = newUser
-  console.log(users)
+
      
 res.redirect('/urls')
 });
@@ -116,7 +135,7 @@ app.post('/urls/:id/edit', (req, res)=> {
 
 //*************GET requests*************
 //Create account/register page
-app.get('/urls/register', (req, res) => {  
+app.get('/urls/register', (req, res) => {
   let email = res.cookie.email
   let templateVars = {
     users: email,
@@ -124,6 +143,16 @@ app.get('/urls/register', (req, res) => {
   };
   res.render("urls_register", templateVars);
   });
+
+  //render login page
+app.get('/urls/login', (req, res) => {
+  let email = req.session.email
+  let templateVars = {
+    users: email,
+    urls: urlDatabase,
+  };
+  res.render("urls_login", templateVars);
+});
 
 
 //redirect default
