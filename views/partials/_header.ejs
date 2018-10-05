@@ -1,20 +1,24 @@
+<%= JSON.stringify(locals) %>
+
 <h1>Tiny App </h1>
-<% if (!username) { %>
 
-  <a href='/urls/register'>Register Now</a> 
 
-  <form action='/urls/login' Method='POST'>
-    <input type='text' placeholder='email' name='email'>
-    <input type='password' placeholder='password' name='password'>
-    <button type ='submit'>Login</button>
-  </form>
+<% if (!locals.user) { %>
+  <% console.log(locals.users, "user") %>
+    <a href='/urls/register'>Register Now</a>  
+  <a href='/urls/login'>Login Now</a>  
   
     <% }else { %>
 
-    <h5><p> Hello, <%= username %> </p> </h5>
+      <p>  <h5>Hello, <%= user.email %>  </h5>
+        <% console.log("loll", locals.user, "lol") %>
+        <% console.log(user, "user") %>
+        <% console.log(users, "users") %>
         <form method='POST' action='/logout'>
-            <input type='submit' value='Logout'>
-        </form>
+          <input type='submit' value='Logout'>
+        </form></p>
+
 
     <% }; %>
 
+    <!-- users['email']  -->
