@@ -1,24 +1,16 @@
-<%= JSON.stringify(locals) %>
+<!-- <%= JSON.stringify(locals) %> -->
 
 <h1>Tiny App </h1>
 
 
 <% if (!locals.user) { %>
-  <% console.log(locals.users, "user") %>
     <a href='/urls/register'>Register Now</a>  
   <a href='/urls/login'>Login Now</a>  
   
     <% }else { %>
 
       <p>  <h5>Hello, <%= user.email %>  </h5>
-        <% console.log("loll", locals.user, "lol") %>
-        <% console.log(user, "user") %>
-        <% console.log(users, "users") %>
         <form method='POST' action='/logout'>
           <input type='submit' value='Logout'>
         </form></p>
-
-
     <% }; %>
-
-    <!-- users['email']  -->

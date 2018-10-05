@@ -9,7 +9,7 @@
 
     <h2>This is Show Page</h2> 
     <ul> 
-    
+    <%= shortURL %> : <%= longURL %>
     <form action="/urls/<%= shortURL %>/edit" method="POST">
     <input id="longURL" type="text" name="longURL" placeholder="http://" style="width: 300px">
     <input type="submit" value="Edit"> <br>

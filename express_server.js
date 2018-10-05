@@ -5,7 +5,8 @@ const express = require("express");
 const app = express();
 const PORT = 8080; // default port 8080
 const bodyParser = require("body-parser");
-var cookieSession = require('cookie-session')
+const cookieSession = require('cookie-session')
+const bcrypt = require('bcrypt');
 
 
 //Middleware
@@ -72,9 +73,12 @@ function findUser(getEmail){
 function urlsForUser(id) {
   let userURLS = {};
   for (let key in urlDatabase) {
+    console.log(key, "key")
     let url = urlDatabase[key]
     if (url.user_id === id);{
+      console.log(userURLS[key], "urlsss")
       userURLS[key] = url
+console.log(url, "url")
     }
   }
   return userURLS
@@ -141,6 +145,7 @@ app.get("/urls/new", (req, res) => {
   let templateVars = { 
     urls: urlDatabase,
     shortURL: req.params.id,
+
     user: userId
   };
   res.render("urls_new", templateVars);
@@ -157,10 +162,19 @@ app.get("/u/:shortURL", (req, res) => {
 //Show all URLs in urlDatabase
 app.get("/urls/:id", (req, res) => {
   let userId = req.session.user_id;
+  let longURL = urlDatabase[req.params.id].longURL
+  if (userId){
+    // userId = req.session.user_id;
+    userUrls = urlsForUser(userId)
+} else {
+    userEmail = undefined 
+}
   let templateVars = { 
       urls: urlDatabase,
       shortURL: req.params.id,
-      user: userId
+      longURL: longURL,
+      user: userId,
+      users: users
     };
   res.render("urls_show", templateVars);
 });
@@ -173,12 +187,9 @@ app.post('/urls/login', (req, res)=> {
   let password = req.body.password;
   let user = findUser(email)
 
-
-  // console.log(email)
-  // console.log(req.session.user_id, "session")
-  // console.log(users)
-  if (email === user.email) {
+  if (user && bcrypt.compareSync(password, user.password)) {
     req.session.user_id = user
+  
 
     res.redirect('/urls');
   }else if (email === '' || password === '' ) {
@@ -199,17 +210,19 @@ app.post('/logout', (req, res) => {
 app.post('/urls/register', (req, res) => {
   let email = req.body.email;
   let password = req.body.password;
-  let user = findUser(email);
-  console.log("test ",user);
-  if(user) { //means the user email exists 
+  let user = findUser(email) ? true : false
+  let hashPass = bcrypt.hashSync(password, 10);
+  
+  if (user) { 
     res.send('Error: 400 Bad Request - Email already in use!')
   } 
-  else if (email === '' || password === '' ) { //this verfies that userId and password should not be empty
+  else if (email === '' || password === '' ) { 
     res.send('Error: 400 Bad Request - Email or password cannot be empty!')
   }else {
-  let genId = generateShortURL();
-    let newUser = {id: genId, email: email, password: password};
+    let genId = generateShortURL();
+    let newUser = {id: genId, email: email, password: hashPass};
       users[genId] = newUser
+     
       //set cookie
       req.session.user_id = newUser
   
