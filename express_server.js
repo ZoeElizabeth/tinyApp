@@ -73,9 +73,7 @@ function findUser(getEmail){
 function urlsForUser(userID) {
   let userURLS = {};
   for(let key in urlDatabase){
-
    if(userID === urlDatabase[key].user_id){
-
       userURLS[key] = urlDatabase[key]
     }
   }
@@ -122,20 +120,18 @@ let user = req.session.user_id
   if (user) {
     let userId = req.session.user_id.id;
     let userURLS = urlsForUser(userId);
-   
-  
-  let templateVars = {
-
+    let templateVars = {
     user: req.session.user_id,
     urls: userURLS
   };
+
   res.render("urls_index", templateVars);
   }else {
       
   let templateVars = {
 
     user: req.session.user_id,
-    urls: {"please log in":"to create urls"}
+    urls: undefined
   };
   res.render("urls_index", templateVars);
   }
