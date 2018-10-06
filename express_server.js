@@ -21,7 +21,7 @@ app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({extended: true})); 
 
 
-//Can I clear cookies with port listen( cookies clear when server starts)
+
  //Listening on local host port
  app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
@@ -70,22 +70,22 @@ function findUser(getEmail){
 };
 
 //Urls created by user
-function urlsForUser(id) {
+function urlsForUser(userID) {
   let userURLS = {};
-  for (let key in urlDatabase) {
-    console.log(key, "key")
-    let url = urlDatabase[key]
-    if (url.user_id === id);{
-      console.log(userURLS[key], "urlsss")
-      userURLS[key] = url
-console.log(url, "url")
+  for(let key in urlDatabase){
+
+   if(userID === urlDatabase[key].user_id){
+
+      userURLS[key] = urlDatabase[key]
     }
   }
   return userURLS
 }
+
 //*************GET requests*************
 //Create account/register page
 app.get('/urls/register', (req, res) => {
+
   let userId = req.session.user_id;
 
   let templateVars = {
@@ -93,14 +93,13 @@ app.get('/urls/register', (req, res) => {
     urls: urlDatabase,
   };
   res.render("urls_register", templateVars);
-  });
+});
 
 //render login page
 app.get('/urls/login', (req, res) => {
   let userId = req.session.user_id;
 
   let templateVars = {
-    user: userId,
     urls: urlDatabase,
     user: userId,
     users: users,
@@ -117,35 +116,41 @@ app.get("/", (req, res) => {
 
 //List all shortURL's and longURls's
 app.get("/urls", (req, res) => {
-  let shortURL = req.params.id
-  let longURL = urlDatabase['longURL']
-  let userId = req.session.user_id
+let user = req.session.user_id
+ 
 
+  if (user) {
+    let userId = req.session.user_id.id;
+    let userURLS = urlsForUser(userId);
+   
+  
   let templateVars = {
-    urls: urlDatabase,
-    shortURL: shortURL,
-    longURL: longURL,
-    user: userId,
-    users: users,
-    };
 
+    user: req.session.user_id,
+    urls: userURLS
+  };
   res.render("urls_index", templateVars);
+  }else {
+      
+  let templateVars = {
+
+    user: req.session.user_id,
+    urls: {"please log in":"to create urls"}
+  };
+  res.render("urls_index", templateVars);
+  }
 });
+
 
 //Create new shortURL
 app.get("/urls/new", (req, res) => {
+  let shortURL = req.params.id
+  let longURL = urlDatabase[shortURL]
   let userId = req.session.user_id;
-
-  if (users[req.session.user_id]) { 
-      userId = req.session.user_id;
-  } else { 
-      userId = undefined
-  };
-
   let templateVars = { 
     urls: urlDatabase,
-    shortURL: req.params.id,
-
+    shortURL: shortURL,
+    longURL: longURL,
     user: userId
   };
   res.render("urls_new", templateVars);
@@ -153,25 +158,26 @@ app.get("/urls/new", (req, res) => {
 
 //Redirect shortURL's to longURL's
 app.get("/u/:shortURL", (req, res) => {
-  let shortURL = req.params.shortURL
-  let longURL = urlDatabase[shortURL].longURL
-
-  res.redirect(longURL);
+  let shortURL = req.params.shortURL;
+  let longURL = urlDatabase[shortURL]
+  res.redirect('http://www.' + longURL.longURL)
 });
 
 //Show all URLs in urlDatabase
 app.get("/urls/:id", (req, res) => {
   let userId = req.session.user_id;
-  let longURL = urlDatabase[req.params.id].longURL
-  if (userId){
-    // userId = req.session.user_id;
+  let shortURL = req.params.id
+  let longURL = urlDatabase[shortURL]
+  if (userId ){
     userUrls = urlsForUser(userId)
+
 } else {
-    userEmail = undefined 
+
+    userId = undefined 
 }
   let templateVars = { 
       urls: urlDatabase,
-      shortURL: req.params.id,
+      shortURL: shortURL,
       longURL: longURL,
       user: userId,
       users: users
@@ -232,16 +238,16 @@ res.redirect('/urls')
 
 //Creating new shortURLs tied to longURLS 
 app.post("/urls", (req, res) => {
-  let makeShortURL = generateShortURL()
-  let currentShortURL = makeShortURL
-  let makeLongURL = req.body['longURL'] 
+  let newshortURL = generateShortURL()
+  let newlongURL = req.body['longURL'] 
 
   //add new urls to database
-  urlDatabase[currentShortURL] = {
-        shortURL: currentShortURL,
-        longURL: makeLongURL,
-      };
-  res.redirect('/urls/' + makeShortURL) 
+  urlDatabase[newshortURL] = {
+      shortURL: newshortURL,
+      longURL: newlongURL,
+      user_id: req.session.user_id.id,
+  };
+  res.redirect('/urls/' + newshortURL) 
 });
 
 // Delete existing URL
@@ -257,7 +263,7 @@ app.post('/urls/:id/edit', (req, res)=> {
   let targetId = req.params.id;
   let databaseKey = urlDatabase[targetId]
 
-  databaseKey.longURL = req.body['longURL']
+  databaseKey['longURL'] = req.body['longURL']
 
   res.redirect('/urls')
 });

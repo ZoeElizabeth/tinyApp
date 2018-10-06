@@ -6,7 +6,12 @@
 </head>
 <%- include partials/_header.ejs %>
 <body>
-    
+    <% if (!user) { %>
+
+      <h2>Please login to view or change Urls!</h2>
+
+      <% }else { %>
+
     <h2>This is Index Page</h2> 
  <ul> 
     <% for (const key in urls) { %>
@@ -14,8 +19,10 @@
    <form method='GET' action='/urls/<%= key %>'><button type='submit'>Edit</button></form>
    <form method='POST' action='/urls/<%= key %>/delete'><button type ='submit'>Delete</button></form>
    <% } %>
+   
    </ul>
    <a href='/urls/new'>Shorten New URL</a> 
+   <% } %>
 </body>
 </html>
 
