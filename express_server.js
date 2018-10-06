@@ -108,8 +108,13 @@ app.get('/urls/login', (req, res) => {
 
 //redirect default
 app.get("/", (req, res) => {
+  let user = req.session.user_id
 
-  res.redirect("/urls");
+  if (user) {
+    res.redirect("/urls");
+  }else {
+    res.redirect("/urls/login");
+  }
 });
 
 //List all shortURL's and longURls's
@@ -136,7 +141,6 @@ let user = req.session.user_id
   res.render("urls_index", templateVars);
   }
 });
-
 
 //Create new shortURL
 app.get("/urls/new", (req, res) => {
@@ -191,9 +195,8 @@ app.post('/urls/login', (req, res)=> {
 
   if (user && bcrypt.compareSync(password, user.password)) {
     req.session.user_id = user
-  
-
     res.redirect('/urls');
+
   }else if (email === '' || password === '' ) {
     res.send('Error: 400 Bad Request - Email or password cannot be empty!')
    
@@ -218,8 +221,10 @@ app.post('/urls/register', (req, res) => {
   if (user) { 
     res.send('Error: 400 Bad Request - Email already in use!')
   } 
+
   else if (email === '' || password === '' ) { 
     res.send('Error: 400 Bad Request - Email or password cannot be empty!')
+
   }else {
     let genId = generateShortURL();
     let newUser = {id: genId, email: email, password: hashPass};
@@ -239,17 +244,17 @@ app.post("/urls", (req, res) => {
 
   //add new urls to database
   urlDatabase[newshortURL] = {
-      shortURL: newshortURL,
-      longURL: newlongURL,
-      user_id: req.session.user_id.id,
+    shortURL: newshortURL,
+    longURL: newlongURL,
+    user_id: req.session.user_id.id,
   };
   res.redirect('/urls/' + newshortURL) 
 });
 
 // Delete existing URL
 app.post('/urls/:id/delete', (req, res) => {
-let targetId = req.params.id;
-  delete urlDatabase[targetId]
+  let targetId = req.params.id;
+    delete urlDatabase[targetId]
 
 res.redirect('/urls');
 });
@@ -261,5 +266,5 @@ app.post('/urls/:id/edit', (req, res)=> {
 
   databaseKey['longURL'] = req.body['longURL']
 
-  res.redirect('/urls')
+res.redirect('/urls')
 });
