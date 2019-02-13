@@ -14,11 +14,13 @@ app.use(cookieSession({
   name: 'session',
   keys: ['secretkeys'],
 
+
   // Cookie Options
   maxAge: 24 * 60 * 60 * 1000 // 24 hours in miliseconds
 }))
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended: true})); 
+app.use('/public', express.static('public'));
 
 
 

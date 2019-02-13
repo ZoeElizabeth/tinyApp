@@ -1,16 +1,25 @@
 <!-- <%= JSON.stringify(locals) %> -->
+<link rel="stylesheet" href="/public/assets/styles.css/_header.css" type="text/css"/>
 
+<div class="header">
 <h1>Tiny App </h1>
 
 
 <% if (!locals.user) { %>
-    <a href='/urls/register'>Register Now</a>  
-  <a href='/urls/login'>Login Now</a>  
-  
+  <div class="form">
+
+   <button> <a href='/urls/register'>Register Now</a>  </button>
+  <button> <a href='/urls/login'>Login Now</a>  </button>
+  </div>
     <% }else { %>
 
-      <p>  <h5>Hello, <%= user.email %>  </h5>
-        <form method='POST' action='/logout'>
-          <input type='submit' value='Logout'>
-        </form></p>
+      <div class="form"> 
+        <h5>Hello, <%= user.email %>  </h5>
+          <form class="input" method='POST' action='/logout'>
+          <button type='submit' value='Logout'>Logout</button>
+        </form>
+      </div>
     <% }; %>
+
+
+  </div>

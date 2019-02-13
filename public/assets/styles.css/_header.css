@@ -1,0 +1,52 @@
+html {
+  box-sizing: border-box;
+}
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+.header {
+  background: red;
+  text-align: left;
+  
+  
+}
+
+h1 {
+  /* margin: 0; */
+padding: 15px;
+}
+
+.form {
+  position: absolute;
+  right: 0;
+  top:0;
+  padding:15px;
+  margin-top: 13px;
+  display: inline;
+}
+h5 {
+  margin-right: 75px;
+}
+
+a {
+padding: 10px;
+}
+
+.input {
+display: inline;
+position: absolute;
+right: 0;
+top:0;
+padding:15px;
+
+}
+
+button{
+  border-radius: 10px
+}
+
+body {
+
+  text-align:center;
+}
